@@ -9,6 +9,8 @@ from qa import qa_responder
 import os
 import yt_dlp
 
+DEMO_MODE = True
+
 # Initialize session state variables if they don't exist
 if 'summary' not in st.session_state:
     st.session_state.summary = None
@@ -42,51 +44,59 @@ if st.button("Summarize Video"):
     if url.strip() == "":
         st.error("Please provide YouTube URL.")
     else:
-        try:
-
-            # Use cookies.txt only if it exists
-            cookie_path = "cookies.txt"
-            use_cookies = os.path.exists(cookie_path)
-
-            if use_cookies:
-                st.write("🔐 Cookies detected: True")
-            else:
-                st.warning("No cookies.txt found. Only public videos may work.")
-
-            ydl_opts = {
-                'quiet': True
-            }
-            if use_cookies:
-                ydl_opts['cookiefile'] = cookie_path
-
-            # Try extracting video info
+        if DEMO_MODE:
+            st.info("Running in Demo Mode: returning precoded responses.")
+            # Set static demo values
+            st.session_state.title = "Demo Video Title"
+            st.session_state.video_id = "demo_video_id"
+            st.session_state.transcript = (
+                "This is a demo transcript simulating a YouTube video's content. "
+                "It contains several sentences that mimic the structure and flow of a typical transcript."
+            )
+            st.session_state.summary = summarizer(st.session_state.transcript)
+        else:
             try:
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                st.success(f"Video found: {info.get('title', 'Unknown title')}")
-            except yt_dlp.utils.DownloadError:
-                st.error("🚫 This video requires login (private/music/age-restricted). Try another public one.")
-                st.stop()
+                # Use cookies.txt only if it exists
+                cookie_path = "cookies.txt"
+                use_cookies = os.path.exists(cookie_path)
+
+                if use_cookies:
+                    st.write("🔐 Cookies detected: True")
+                else:
+                    st.warning("No cookies.txt found. Only public videos may work.")
+
+                ydl_opts = {'quiet': True}
+                if use_cookies:
+                    ydl_opts['cookiefile'] = cookie_path
+
+                # Extract video info using yt_dlp
+                try:
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        info = ydl.extract_info(url, download=False)
+                    st.success(f"Video found: {info.get('title', 'Unknown title')}")
+                except yt_dlp.utils.DownloadError:
+                    st.error("🚫 This video requires login (private/music/age-restricted). Try another public one.")
+                    st.stop()
+                
+                with st.spinner("Fetching video title..."):
+                    st.session_state.title = get_video_title(url)
+                with st.spinner("Extracting video ID..."):
+                    st.session_state.video_id = get_video_id(url)
+                with st.spinner("Retrieving transcript..."):
+                    st.session_state.transcript = get_transcript(st.session_state.video_id)
+                if not st.session_state.transcript:
+                    st.warning("Transcript not available for this video.")
+                    st.session_state.summary = None
+                else:
+                    with st.spinner("Generating summary..."):
+                        st.session_state.summary = summarizer(st.session_state.transcript)
             
-            with st.spinner("Fetching video title..."):
-                st.session_state.title = get_video_title(url)
-            with st.spinner("Extracting video ID..."):
-                st.session_state.video_id = get_video_id(url)
-            with st.spinner("Retrieving transcript..."):
-                st.session_state.transcript = get_transcript(st.session_state.video_id)
-            if not st.session_state.transcript:
-                st.warning("Transcript not available for this video.")
-                st.session_state.summary = None
-            else:
-                with st.spinner("Generating summary..."):
-                    st.session_state.summary = summarizer(st.session_state.transcript)
+            except ValueError as e:
+                st.error(f"Error: {e}")
+            
+            except Exception as e:
+                st.error(f"Something went wrong: {type(e).__name__} - {e}")
 
-
-        except ValueError as e:
-            st.error(f"Error: {e}")
-
-        except Exception as e:
-            st.error(f"Something went wrong: {type(e).__name__} - {e}")
 
 if st.session_state.summary:
     st.markdown(f"## 🎬 *{st.session_state.title}*")

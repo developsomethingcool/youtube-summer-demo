@@ -5,7 +5,6 @@ from pytube import extract
 import yt_dlp
 from langdetect import detect
 
-
 def get_video_id(url):
     return extract.video_id(url)
 
