@@ -6,6 +6,26 @@ from utils import get_video_id, get_transcript, get_video_title, format_transcri
 from summarizer import summarizer
 from qa import qa_responder
 
+import os
+import yt_dlp
+
+# Load cookies from Hugging Face secret
+cookies = os.getenv("YOUTUBE_COOKIES")
+
+# Save to file
+with open("cookies.txt", "w") as f:
+    f.write(cookies)
+
+# yt-dlp options
+ydl_opts = {
+    'cookiefile': 'cookies.txt',
+    'quiet': True,
+}
+
+# Download info
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    info = ydl.extract_info(video_url, download=False)
+
 # Initialize session state variables if they don't exist
 if 'summary' not in st.session_state:
     st.session_state.summary = None
