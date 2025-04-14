@@ -1,0 +1,5 @@
+streamlit>=1.27.0
+pytube>=15.0.0
+youtube_transcript_api>=0.6.1
+yt-dlp>=2023.10.13
+langdetect>=1.0.9

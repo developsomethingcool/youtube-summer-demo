@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+summer/  
+
+# Environment variable files
+.env
+.env.*
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Ollama models or temp files (if any are generated)
+ollama_data/
+*.bin
+
+# Misc
+*.sqlite3
+*.db
+*.tmp
+
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
