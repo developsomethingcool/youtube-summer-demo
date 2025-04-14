@@ -14,7 +14,7 @@ pinned: false
 
 A Streamlit-based web application that demonstrates the interface of the YouTube Video Summarizer project.
 
-⚠️ This is a *frontend demo version* deployed on HuggingFace Spaces. The real AI-powered version using Llama3 via Ollama is available locally here: 👉 [Full Dynamic Version on GitHub](https://github.com/developsomethingcool/youtube-summarizer)
+⚠️ This is a *frontend demo version* deployed on HuggingFace Spaces. The real AI-powered version using Llama3 via Ollama is available locally here: 👉 [Full Dynamic Version on GitHub](https://github.com/developsomethingcool/youtube-summer)
 
 ## 📋 Overview
 
@@ -79,7 +79,7 @@ No Ollama required in this demo version!
 * Summary & answers are static placeholders
 * Full Llama3.1-powered version available only locally
 
-For full functionality: 👉 [Dynamic Ollama-powered Repo](https://github.com/developsomethingcool/youtube-summarizer)
+For full functionality: 👉 [Dynamic Ollama-powered Repo](https://github.com/developsomethingcool/youtube-summer)
 
 ## 💜 License
 This project is MIT licensed.
