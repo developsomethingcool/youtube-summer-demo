@@ -1,3 +1,15 @@
+---
+title: YouTube Summarizer
+emoji: 📺
+colorFrom: indigo
+colorTo: cyan
+sdk: streamlit
+sdk_version: "1.32.0"
+app_file: app.py
+pinned: false
+---
+
+
 # 🎥 YouTube Video Summarizer - HuggingFace Demo Version
 
 A Streamlit-based web application that demonstrates the interface of the YouTube Video Summarizer project.
