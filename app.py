@@ -44,25 +44,29 @@ if st.button("Summarize Video"):
     else:
         try:
 
-            cookies = os.getenv("YOUTUBE_COOKIES")
-            st.write("Cookies loaded:", bool(cookies))
-            
-            if not cookies:
-                st.error("Missing cookies. Please contact the developer.")
-                st.stop()
-            
-            with open("cookies.txt", "w") as f:
-                f.write(cookies)
-            
+            # Use cookies.txt only if it exists
+            cookie_path = "cookies.txt"
+            use_cookies = os.path.exists(cookie_path)
+
+            if use_cookies:
+                st.write("🔐 Cookies detected: True")
+            else:
+                st.warning("No cookies.txt found. Only public videos may work.")
+
             ydl_opts = {
-                'cookiefile': 'cookies.txt',
-                'quiet': True,
+                'quiet': True
             }
-            
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
-            
-            os.remove("cookies.txt")
+            if use_cookies:
+                ydl_opts['cookiefile'] = cookie_path
+
+            # Try extracting video info
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                st.success(f"Video found: {info.get('title', 'Unknown title')}")
+            except yt_dlp.utils.DownloadError:
+                st.error("🚫 This video requires login (private/music/age-restricted). Try another public one.")
+                st.stop()
             
             with st.spinner("Fetching video title..."):
                 st.session_state.title = get_video_title(url)
