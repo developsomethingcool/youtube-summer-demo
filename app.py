@@ -16,6 +16,8 @@ cookies = os.getenv("YOUTUBE_COOKIES")
 with open("cookies.txt", "w") as f:
     f.write(cookies)
 
+st.write("Cookies loaded:", bool(cookies))
+
 # yt-dlp options
 ydl_opts = {
     'cookiefile': 'cookies.txt',
